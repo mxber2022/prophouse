@@ -9,6 +9,10 @@
 <h4 align="center">🥶 Introducing the Ballot at your window frame, vote whilst you surf, poop or procrastinate 🫦</h4>
 
 <p align="center">
+  <img width="300" src="https://github.com/mxber2022/prophouse/blob/main/Assets/ReadMe.gif">
+</p>
+
+<p align="center">
   <a href="https://twitter.com/The_Game_2030">
     <img src="https://img.shields.io/badge/Reach_Agustin-On_Twitter-Green">
   </a>
@@ -21,7 +25,7 @@
   <a href="#FAQs">FAQ's</a> •
 </p>
 
-<img width="1084" src="">
+
 
 ## Key Features
 
