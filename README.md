@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="">
+  <img width = "30" src="https://github.com/mxber2022/prophouse/blob/main/Assets/ReadMe.gif">
   <br>
   Lil Nouns Ballot at your window project
   <br>
