@@ -34,7 +34,7 @@
 
 ## Short Description
 
-
+The utility in this project to the lil nouns community is the convenience of voting for proposals from Warpcaster (or any farcaster Dapp) without the friction of having to navigate through the common channels. The idea is as powerful as it is simple. Increase voter count dramatically by simply sharing a post, the voting mechanism is of course gatekept by the usual voting requirement of holding one lil noun as a prerequisite, this is checked within the frame. 
 
 ## How To Use
 
