@@ -174,6 +174,11 @@ const abi = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
         "internalType": "uint8",
         "name": "support",
         "type": "uint8"
@@ -228,7 +233,7 @@ app.transaction('/vote', (c) => {
     chainId: 'eip155:1',
     functionName: 'castVote',
     //@ts-ignore
-    args: [inputText],
+    args: [192, 0],
     to: '0x5d2C31ce16924C2a71D317e5BbFd5ce387854039',
   })
 })
