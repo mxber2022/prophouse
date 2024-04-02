@@ -8,12 +8,182 @@ import { parseEther } from 'frog'
 
 const abi = [
   {
-    inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
-    name: 'mint',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    "inputs": [],
+    "name": "GRACE_PERIOD",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
+  {
+    "inputs": [],
+    "name": "acceptAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "signature",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eta",
+        "type": "uint256"
+      }
+    ],
+    "name": "cancelTransaction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "delay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "signature",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eta",
+        "type": "uint256"
+      }
+    ],
+    "name": "executeTransaction",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "signature",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint256",
+        "name": "eta",
+        "type": "uint256"
+      }
+    ],
+    "name": "queueTransaction",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "queuedTransactions",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "support",
+        "type": "uint8"
+      }
+    ],
+    "name": "castVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ]
 
 const app = new Frog({
@@ -27,14 +197,14 @@ app.frame('/', (c) => {
   return c.res({
     action: '/finish',
     image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Perform a transaction
+      <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
+        Cast Vote for Proposal
       </div>
     ),
     intents: [
-      <TextInput placeholder="Value (ETH)" />,
-      <Button.Transaction target="/send-ether">Send Ether</Button.Transaction>,
-      <Button.Transaction target="/mint">Mint</Button.Transaction>,
+      <TextInput placeholder="0=against, 1=for, 2=abstain" />,
+      <Button.Transaction target="/vote">Vote</Button.Transaction>,
+      <Button.Transaction target="/mint">Next proposal</Button.Transaction>,
     ]
   })
 })
@@ -50,13 +220,16 @@ app.frame('/finish', (c) => {
   })
 })
  
-app.transaction('/send-ether', (c) => {
+app.transaction('/vote', (c) => {
   const { inputText } = c
   // Send transaction response.
-  return c.send({
-    chainId: 'eip155:10',
-    to: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
-    value: parseEther(inputText),
+  return c.contract({
+    abi,
+    chainId: 'eip155:1',
+    functionName: 'castVote',
+    //@ts-ignore
+    args: [inputText],
+    to: '0x5d2C31ce16924C2a71D317e5BbFd5ce387854039',
   })
 })
  
@@ -67,8 +240,10 @@ app.transaction('/mint', (c) => {
     abi,
     chainId: 'eip155:10',
     functionName: 'mint',
+    //@ts-ignore
     args: [69420n],
     to: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
+    //@ts-ignore
     value: parseEther(inputText)
   })
 })
