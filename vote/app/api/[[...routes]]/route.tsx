@@ -6,171 +6,7 @@ import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
 import { parseEther } from 'frog'
 
-const abi = [
-  {
-    "inputs": [],
-    "name": "GRACE_PERIOD",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "acceptAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "signature",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint256",
-        "name": "eta",
-        "type": "uint256"
-      }
-    ],
-    "name": "cancelTransaction",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "delay",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "signature",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint256",
-        "name": "eta",
-        "type": "uint256"
-      }
-    ],
-    "name": "executeTransaction",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "target",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "signature",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint256",
-        "name": "eta",
-        "type": "uint256"
-      }
-    ],
-    "name": "queueTransaction",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "hash",
-        "type": "bytes32"
-      }
-    ],
-    "name": "queuedTransactions",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  
+const abi = [ 
   {
     "inputs": [
       {
@@ -185,6 +21,30 @@ const abi = [
       }
     ],
     "name": "castVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "proposalId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "support",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "castVoteWithReason",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -203,13 +63,14 @@ app.frame('/', (c) => {
     action: '/finish',
     image: (
       <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
-        Cast Vote for Proposal
+        Cast Vote for my proposal
       </div>
     ),
     intents: [
-      <TextInput placeholder="0=against, 1=for, 2=abstain" />,
+      <TextInput placeholder="0=against, 1=for, 2=abstain"/>,
+      // <TextInput placeholder="Reason for your vote" />,
       <Button.Transaction target="/vote">Vote</Button.Transaction>,
-      <Button.Transaction target="/mint">Next proposal</Button.Transaction>,
+      // <Button.Transaction target="/castVoteWithReason">CastVoteWithReason</Button.Transaction>,
     ]
   })
 })
@@ -233,7 +94,7 @@ app.transaction('/vote', (c) => {
     chainId: 'eip155:1',
     functionName: 'castVote',
     //@ts-ignore
-    args: [192, 0],
+    args: [192, inputText],
     to: '0x5d2C31ce16924C2a71D317e5BbFd5ce387854039',
   })
 })
@@ -250,6 +111,21 @@ app.transaction('/mint', (c) => {
     to: '0xd2135CfB216b74109775236E36d4b433F1DF507B',
     //@ts-ignore
     value: parseEther(inputText)
+  })
+})
+
+app.transaction('/castVoteWithReason', (c) => {
+  const { inputText } = c;
+  //@ts-ignore
+  const reason = c.req.query.reason;
+  // Send transaction response.
+  return c.contract({
+    abi,
+    chainId: 'eip155:1',
+    functionName: 'castVoteWithReason',
+    //@ts-ignore
+    args: [192, inputText, reason],
+    to: '0x5d2C31ce16924C2a71D317e5BbFd5ce387854039',
   })
 })
 
