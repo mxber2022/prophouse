@@ -62,11 +62,13 @@ const app = new Frog({
   Get Latest Proposal ID and Description
 */
 
-async function getProposalData () {
-  
-}
+
  
 app.frame('/', (c) => {
+
+  const buttonValue = {c};
+  console.log("buttonValue: ", buttonValue);
+
   return c.res({
     action: '/finish',
     image: (
@@ -77,21 +79,43 @@ app.frame('/', (c) => {
     intents: [
       <TextInput placeholder="0=against, 1=for, 2=abstain"/>,
       // <TextInput placeholder="Reason for your vote" />,
-      <Button.Transaction target="/vote">Vote</Button.Transaction>,
-      // <Button.Transaction target="/castVoteWithReason">CastVoteWithReason</Button.Transaction>,
+      <Button.Transaction target="/vote">VOTE</Button.Transaction>,
+      // <Button.Transaction target="/nextProposal">NEXT</Button.Transaction>,
+      <Button value="next">NEXT</Button>,
     ]
   })
 })
+
  
 app.frame('/finish', (c) => {
+  console.log("hello");
+  const {buttonValue} = c;
+  console.log("buttonValue: ", buttonValue);
+
   const { transactionId } = c
-  return c.res({
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Transaction ID: {transactionId}
-      </div>
-    )
-  })
+  /*
+    button next
+  */
+  //ts-ignore
+      if (buttonValue === 'next') {
+        return c.res({
+          action: '/meme/a',
+          image: "",
+          intents: [
+            <TextInput placeholder="Text" />,
+            <Button value="generate">Generate</Button>,
+          ],
+        })
+      }
+      else {
+        return c.res({
+          image: (
+            <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+              Transaction ID: {transactionId}
+            </div>
+          )
+        })
+      }
 })
  
 app.transaction('/vote', (c) => {
@@ -137,6 +161,20 @@ app.transaction('/castVoteWithReason', (c) => {
   })
 })
 
+app.frame('/nextProposal', (c) => {
+  return c.res({
+    image: (
+      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+        Select your fruit!
+      </div>
+    ),
+    intents: [
+      <Button value="apple">Apple</Button>,
+      <Button value="banana">Banana</Button>,
+      <Button value="mango">Mango</Button>
+    ]
+  })
+})
 devtools(app, { serveStatic })
 
 export const GET = handle(app)
