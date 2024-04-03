@@ -100,10 +100,17 @@ app.frame('/finish', (c) => {
       if (buttonValue === 'next') {
         return c.res({
           action: '/meme/a',
-          image: "",
+          image: (
+            <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
+              Cast Vote for proposal id
+            </div>
+          ),
           intents: [
-            <TextInput placeholder="Text" />,
-            <Button value="generate">Generate</Button>,
+            <TextInput placeholder="0=against, 1=for, 2=abstain"/>,
+            // <TextInput placeholder="Reason for your vote" />,
+            <Button.Transaction target="/vote">VOTE</Button.Transaction>,
+            // <Button.Transaction target="/nextProposal">NEXT</Button.Transaction>,
+            <Button value="next">NEXT</Button>,
           ],
         })
       }
