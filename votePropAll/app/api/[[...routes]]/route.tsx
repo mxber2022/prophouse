@@ -51,9 +51,19 @@ const abi = [
   }
 ]
 
-const app = new Frog({
+
+
+type State = {
+  count: number
+}
+
+
+const app = new Frog<{ State: State }>({
   assetsPath: '/',
   basePath: '/api',
+  initialState : {
+    count: 192
+  }
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
 })
@@ -69,11 +79,12 @@ app.frame('/', (c) => {
   const buttonValue = {c};
   console.log("buttonValue: ", buttonValue);
 
+
   return c.res({
     action: '/finish',
     image: (
       <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
-        Cast Vote for my proposal
+        Cast Vote for proposal id 192
       </div>
     ),
     intents: [
@@ -81,7 +92,9 @@ app.frame('/', (c) => {
       // <TextInput placeholder="Reason for your vote" />,
       <Button.Transaction target="/vote">VOTE</Button.Transaction>,
       // <Button.Transaction target="/nextProposal">NEXT</Button.Transaction>,
+      <Button value="prev">PREV</Button>,
       <Button value="next">NEXT</Button>,
+      
     ]
   })
 })
@@ -96,13 +109,19 @@ app.frame('/finish', (c) => {
   /*
     button next
   */
-  //ts-ignore
-      if (buttonValue === 'next') {
+
+    const { deriveState } = c
+    const state = deriveState(previousState => {
+      if (buttonValue === 'next') previousState.count++
+      if (buttonValue === 'prev') previousState.count--
+    })
+
+      if (buttonValue === 'next' || buttonValue === 'prev') {
         return c.res({
-          action: '/meme/a',
+          action: '/finish',
           image: (
             <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
-              Cast Vote for proposal id
+              Cast Vote for proposal id {state.count}
             </div>
           ),
           intents: [
@@ -110,6 +129,7 @@ app.frame('/finish', (c) => {
             // <TextInput placeholder="Reason for your vote" />,
             <Button.Transaction target="/vote">VOTE</Button.Transaction>,
             // <Button.Transaction target="/nextProposal">NEXT</Button.Transaction>,
+            <Button value="prev">PREV</Button>,
             <Button value="next">NEXT</Button>,
           ],
         })
