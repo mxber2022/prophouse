@@ -82,11 +82,7 @@ app.frame('/', (c) => {
 
   return c.res({
     action: '/finish',
-    image: (
-      <div style={{ color: 'gray', display: 'flex', fontSize: 60 }}>
-        Cast Vote for proposal id 192
-      </div>
-    ),
+    image:'https://azure-worried-landfowl-942.mypinata.cloud/ipfs/QmVj3zPGA4EUNgMWSA1yzmBHCtnd7R4crBVUex5vQRLurm/TechWhiteboard-min.jpg',
     intents: [
       <TextInput placeholder="0=against, 1=for, 2=abstain"/>,
       // <TextInput placeholder="Reason for your vote" />,
