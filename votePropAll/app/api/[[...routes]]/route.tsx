@@ -83,6 +83,7 @@ app.frame('/', (c) => {
   return c.res({
     action: '/finish',
     image:'https://azure-worried-landfowl-942.mypinata.cloud/ipfs/QmVj3zPGA4EUNgMWSA1yzmBHCtnd7R4crBVUex5vQRLurm/TechWhiteboard-min.jpg',
+    imageAspectRatio: '1:1',
     intents: [
       <TextInput placeholder="0=against, 1=for, 2=abstain"/>,
       // <TextInput placeholder="Reason for your vote" />,
